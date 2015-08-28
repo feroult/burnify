@@ -3,7 +3,7 @@ Interactive Product Burn-Down Chart
 
 ## Introduction
 
-**Burnify** is a jQuery plugin that creates highly interactive product burn-down charts to be embedded into any web application.
+**Burnify** is a jQuery plugin that creates a highly interactive product burn-down chart to be embedded into any web application.
 
 ![](https://github.com/feroult/burnify/blob/master/sample.png)
 
