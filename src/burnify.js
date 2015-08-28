@@ -445,8 +445,6 @@ burnify = (function () {
             .attr("transform", "translate(" + dim.margin.left + "," + dim.margin.top + ")");
     }
 
-    burn
-
     return function (selector, project, width, height) {
         productChart(selector, project, width, height);
     };
