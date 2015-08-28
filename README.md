@@ -7,6 +7,9 @@ Interactive Product Burn-Down Chart
 
 ![](https://github.com/feroult/burnify/blob/master/sample.png)
 
+Open the [live demo](https://rawgit.com/feroult/burnify/master/test/product.html).
+
+
 ## How it Works
 
 ### Import plugin:
