@@ -24,7 +24,7 @@ Interactive Product Burn-Down Chart
 
 ### Burnify it:
 ```javascript
-$("#product-chart").burnify(json, 800, 600);
+burnify("#product-chart", json, 800, 600);
 ```
 
 ### Json sample structure:
