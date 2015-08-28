@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <title>Burnify</title>
 
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
 
     <link href="https://cdn.rawgit.com/feroult/burnify/master/src/jquery.burnify.css" rel="stylesheet" type="text/css">
@@ -31,7 +31,9 @@
     </div>
 
     <script>
+        console.log('ha');
         $.getJSON('https://rawgit.com/feroult/burnify/master/test/project.json', function (project) {
+            console.log('p', project);
             $("#product-chart").burnify(project, 800, 400);
         });
     </script>
