@@ -433,7 +433,7 @@ burnify = (function () {
         }
     }
 
-    function createChartSVG(element, dim) {
+    function createChartSVG(selector, dim) {
         return d3.select(selector)
             .classed("burnify", true)
             .append("svg")
