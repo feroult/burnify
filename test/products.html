@@ -39,12 +39,12 @@
     </div>
 
     <script>
-        $.getJSON('https://cdn.rawgit.com/feroult/burnify/burnify-0.3/test/products.json', function (project) {
+        $.getJSON('https://cdn.rawgit.com/feroult/burnify/burnify-0.3/test/products.json', function (products) {
             //$.getJSON('products.json', function (project) {
-            burnify("#product1", project[0], 450, 250);
-            burnify("#product2", project[1], 450, 250);
-            burnify("#product3", project[2], 450, 250);
-            burnify("#product4", project[3], 450, 250);
+            burnify("#product1", products[0], 450, 250);
+            burnify("#product2", products[1], 450, 250);
+            burnify("#product3", products[2], 450, 250);
+            burnify("#product4", products[3], 450, 250);
         });
     </script>
 
