@@ -262,7 +262,7 @@ burnify = (function () {
                         return area(d.values);
                     });
 
-                d3.selectAll("." + clazz)
+                svg.selectAll("." + clazz)
                     .data(stack)
                     .transition()
                     .duration(2000)
@@ -306,13 +306,24 @@ burnify = (function () {
             renderScopeStack(outEmptyStack, outStack, "scopeOut");
         }
 
+        function isMvpOverLimit() {
+            return project.mvpSprint == project.lastSprint && project.lastSprint != data.length;
+        }
+
         function renderProjectLimit(x, y0) {
             if (project.lastSprint == data.length) {
                 return;
             }
 
-            var lastSprint = data[project.lastSprint].sprint;
-            var x_ = x(lastSprint) - x.rangeBand() / 5;
+            var lastSprint = data[project.lastSprint - 1].sprint;
+            var x_ = x(lastSprint) + x.rangeBand() * 1.2;
+            var textY = -5;
+
+            if (isMvpOverLimit()) {
+                x_ += 2;
+                textY = -15;
+            }
+
             svg.append("line")
                 .attr("class", "limit")
                 .attr("x1", x_)
@@ -326,14 +337,19 @@ burnify = (function () {
 
             svg.append("text")
                 .attr("x", x_)
-                .attr("y", -5)
+                .attr("y", textY)
                 .text("LIMIT")
                 .attr("class", "limit");
         }
 
         function renderProjectMVP(x, y0) {
-            var mvpSprint = data[project.mvpSprint].sprint;
-            var x_ = x(mvpSprint) - x.rangeBand() / 5;
+            var mvpSprint = data[project.mvpSprint - 1].sprint;
+            var x_ = x(mvpSprint) + x.rangeBand() * 1.2;
+            var textY = -5;
+
+            if (isMvpOverLimit()) {
+                x_ -= 2;
+            }
 
             svg.append("line")
                 .attr("class", "mvp")
@@ -410,7 +426,7 @@ burnify = (function () {
                 points: points,
                 projection: true,
                 totalDone: totalDone,
-                totalOut: (data.length > project.lastSprint - 2) ? totalOut : undefined
+                totalOut: (data.length > project.lastSprint - 1) ? totalOut : undefined
             });
 
         } while (remaining != 0);
@@ -421,9 +437,9 @@ burnify = (function () {
     function defineChartDimentions(width, height) {
         var margin = {
             top: 40,
-            right: 80,
+            right: 30,
             bottom: 20,
-            left: 80
+            left: 30
         };
 
         return {
@@ -444,6 +460,7 @@ burnify = (function () {
             .attr("class", "graph")
             .attr("transform", "translate(" + dim.margin.left + "," + dim.margin.top + ")");
     }
+
 
     return function (selector, project, width, height) {
         productChart(selector, project, width, height);

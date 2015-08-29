@@ -9,13 +9,15 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
 
+    <!--
     <link href="https://cdn.rawgit.com/feroult/burnify/0ce1264cc696e8e2a409b1e0349ab0e1d5941e56/src/burnify.css" rel="stylesheet" type="text/css">
     <script src="https://cdn.rawgit.com/feroult/burnify/0ce1264cc696e8e2a409b1e0349ab0e1d5941e56/src/burnify.js"></script>
+-->
 
-    <!--
+
     <link href="../src/burnify.css" rel="stylesheet" type="text/css">
     <script src="../src/burnify.js"></script>
-    -->
+
 
     <style type="text/css">
         div.outter {
@@ -23,8 +25,7 @@
         }
         
         div.inner {
-            display: table;
-            margin: 0 auto;
+            display: inline;
         }
     </style>
 
@@ -32,12 +33,19 @@
 
 <body>
     <div class="outter">
-        <div id="product-chart" class="inner" />
+        <div id="product-chart1" class="inner"></div>
+        <div id="product-chart2" class="inner"></div>
+        <div id="product-chart3" class="inner"></div>
+        <div id="product-chart4" class="inner"></div>
     </div>
 
     <script>
-        $.getJSON('https://rawgit.com/feroult/burnify/master/test/project.json', function (project) {
-            burnify("#product-chart", project, 800, 350);
+        //$.getJSON('https://rawgit.com/feroult/burnify/master/test/project.json', function (project) {
+        $.getJSON('project.json', function (project) {
+            burnify("#product-chart1", project[0], 450, 250);
+            burnify("#product-chart2", project[1], 450, 250);
+            burnify("#product-chart3", project[2], 450, 250);
+            burnify("#product-chart4", project[3], 450, 250);
         });
     </script>
 

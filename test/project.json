@@ -1,37 +1,88 @@
-{
-    "name": "Burnify",
-    "points": 120,
-    "lastSprint": 13,
-    "mvpSprint": 10,
-    "sprints": [{
-            "planned": 10,
-            "done": 10
+[{
+        "name": "Burnify 1",
+        "points": 120,
+        "lastSprint": 13,
+        "mvpSprint": 10,
+        "sprints": [{
+                "planned": 10,
+                "done": 10
         }, {
-            "planned": 12,
-            "done": 10
+                "planned": 12,
+                "done": 10
         }, {
-            "planned": 10,
-            "done": 10
+                "planned": 10,
+                "done": 10
         }, {
-            "planned": 10,
-            "done": 6,
-            "added": 52
+                "planned": 10,
+                "done": 6,
+                "added": 52
         }, {
-            "planned": 14,
-            "done": 8,
-            "added": 12
+                "planned": 14,
+                "done": 8,
+                "added": 12
         }, {
-            "planned": 14,
-            "done": 8,
-            "added": 2,
-            "removed": 20
+                "planned": 14,
+                "done": 8,
+                "added": 2,
+                "removed": 20
         }, {
-            "planned": 12,
-            "done": 4
+                "planned": 12,
+                "done": 4
         }, {
-            "planned": 10,
-            "done": 6,
-            "added": 2
+                "planned": 10,
+                "done": 6,
+                "added": 2
+        }
+    ]
+}, {
+        "name": "Burnify 2",
+        "points": 220,
+        "lastSprint": 10,
+        "mvpSprint": 8,
+        "sprints": [{
+                "done": 18
+        }, {
+                "done": 24
+        }, {
+                "done": 16
+        }, {
+                "done": 22
+        }, {
+                "done": 8,
+                "added": 32
+        }, {
+                "done": 20,
+                "removed": 20
+        }, {
+                "done": 30,
+                "added": 2
+        }
+    ]
+}, {
+        "name": "Burnify 3",
+        "points": 120,
+        "lastSprint": 10,
+        "mvpSprint": 10,
+        "sprints": [{
+                "done": 10
+        }, {
+                "done": 10
+        }, {
+                "done": 10
+        }
+    ]
+}, {
+        "name": "Burnify 4",
+        "points": 200,
+        "lastSprint": 10,
+        "mvpSprint": 8,
+        "sprints": [{
+                "done": 20
+        }, {
+                "done": 20
+        }, {
+                "done": 20
         }
     ]
 }
+]
