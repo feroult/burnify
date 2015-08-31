@@ -217,7 +217,6 @@ burnify = (function () {
             function createArea() {
                 return d3.svg.area()
                     .x(function (d) {
-                        console.log('d', data.length, d.index, dim.width, (dim.width / data.length) * d.index);
                         var itemWidth = (dim.width / data.length);
                         var items = d.index + 1;
                         return itemWidth * items;
@@ -237,7 +236,7 @@ burnify = (function () {
                     });
             }
 
-            function scopeStack(stack, data, yAccessor) {
+            function scopeStack(stack, data, initY, yAccessor) {
                 var values = data.map(function (d) {
                     return {
                         index: d.index,
@@ -249,7 +248,7 @@ burnify = (function () {
                 values.unshift({
                     index: data[0].index - 1,
                     sprint: 'chart init',
-                    y: yAccessor(data[0])
+                    y: initY
                 });
 
                 return stack([{
@@ -285,15 +284,15 @@ burnify = (function () {
             var area = createArea();
             var stack = createStack();
 
-            var emptyStack = scopeStack(stack, data, function (d) {
+            var emptyStack = scopeStack(stack, data, 0, function (d) {
                 return 0;
             });
 
-            var pointsStack = scopeStack(stack, data, function (d) {
+            var pointsStack = scopeStack(stack, data, data[0].points, function (d) {
                 return d.points;
             });
 
-            var doneStack = scopeStack(stack, data, function (d) {
+            var doneStack = scopeStack(stack, data, 0, function (d) {
                 return d.totalDone;
             });
 
@@ -301,11 +300,11 @@ burnify = (function () {
             var outEmptyStack, outStack;
 
             if (outData.length > 0) {
-                var outEmptyStack = scopeStack(stack, outData, function (d) {
+                var outEmptyStack = scopeStack(stack, outData, 0, function (d) {
                     return 0;
                 });
 
-                var outStack = scopeStack(stack, outData, function (d) {
+                var outStack = scopeStack(stack, outData, outData[0].totalOut, function (d) {
                     return d.totalOut;
                 });
             }
