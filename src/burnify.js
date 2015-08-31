@@ -217,13 +217,10 @@ burnify = (function () {
             function createArea() {
                 return d3.svg.area()
                     .x(function (d) {
-                        if (d.index == 0) {
-                            return 0;
-                        }
-                        if (d.index == data.length - 1) {
-                            return dim.width;
-                        }
-                        return x(d.sprint);
+                        console.log('d', data.length, d.index, dim.width, (dim.width / data.length) * d.index);
+                        var itemWidth = (dim.width / data.length);
+                        var items = d.index + 1;
+                        return itemWidth * items;
                     }).y0(function (d) {
                         return y0(d.y0);
                     })
@@ -241,14 +238,22 @@ burnify = (function () {
             }
 
             function scopeStack(stack, data, yAccessor) {
+                var values = data.map(function (d) {
+                    return {
+                        index: d.index,
+                        sprint: d.sprint,
+                        y: yAccessor(d)
+                    };
+                });
+
+                values.unshift({
+                    index: data[0].index - 1,
+                    sprint: 'chart init',
+                    y: yAccessor(data[0])
+                });
+
                 return stack([{
-                    values: data.map(function (d) {
-                        return {
-                            index: d.index,
-                            sprint: d.sprint,
-                            y: yAccessor(d)
-                        };
-                    })
+                    values: values
                 }]);
             }
 
@@ -293,17 +298,24 @@ burnify = (function () {
             });
 
             var outData = filterOut(data);
-            var outEmptyStack = scopeStack(stack, outData, function (d) {
-                return 0;
-            });
+            var outEmptyStack, outStack;
 
-            var outStack = scopeStack(stack, outData, function (d) {
-                return d.totalOut;
-            });
+            if (outData.length > 0) {
+                var outEmptyStack = scopeStack(stack, outData, function (d) {
+                    return 0;
+                });
+
+                var outStack = scopeStack(stack, outData, function (d) {
+                    return d.totalOut;
+                });
+            }
 
             renderScopeStack(emptyStack, pointsStack, "scopePoints");
             renderScopeStack(emptyStack, doneStack, "scopeDone");
-            renderScopeStack(outEmptyStack, outStack, "scopeOut");
+
+            if (outData.length > 0) {
+                renderScopeStack(outEmptyStack, outStack, "scopeOut");
+            }
         }
 
         function isMvpOverLimit() {
