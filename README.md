@@ -30,7 +30,7 @@ Open the [live demo](https://cdn.rawgit.com/feroult/burnify/burnify-0.3/test/pro
 burnify("#product-chart", json, 800, 600);
 ```
 
-### Json sample structure:
+### Sample json structure:
 ```javascript
 {
     name: 'Burnify',
