@@ -14,7 +14,6 @@ Open the [live demo](https://cdn.rawgit.com/feroult/burnify/burnify-0.3/test/pro
 
 ### Import plugin:
 ```html
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
 
 <link href="https://cdn.rawgit.com/feroult/burnify/burnify-0.3/src/jquery.burnify.css" rel="stylesheet" type="text/css">
