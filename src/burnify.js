@@ -217,9 +217,7 @@ burnify = (function () {
             function createArea() {
                 return d3.svg.area()
                     .x(function (d) {
-                        var itemWidth = (dim.width / data.length);
-                        var items = d.index + 1;
-                        return itemWidth * items;
+                        return d.x;
                     }).y0(function (d) {
                         return y0(d.y0);
                     })
@@ -236,19 +234,28 @@ burnify = (function () {
                     });
             }
 
-            function scopeStack(stack, data, initY, yAccessor) {
-                var values = data.map(function (d) {
-                    return {
-                        index: d.index,
+            function scopeStack(stack, scopeData, initX, initY, yAccessor) {
+                var itemWidth = (dim.width - initX) / scopeData.length;
+
+                var index = 1;
+                
+                var values = scopeData.map(function (d) {
+                    var v =  {
+                        index: index,
                         sprint: d.sprint,
+                        x: initX + itemWidth * index,
                         y: yAccessor(d)
                     };
+                    
+                    index++;
+                    return v;
                 });
 
                 values.unshift({
-                    index: data[0].index - 1,
+                    index: 0,
                     sprint: 'chart init',
-                    y: initY
+                    y: initY,
+                    x: initX
                 });
 
                 return stack([{
@@ -284,15 +291,15 @@ burnify = (function () {
             var area = createArea();
             var stack = createStack();
 
-            var emptyStack = scopeStack(stack, data, 0, function (d) {
+            var emptyStack = scopeStack(stack, data, 0, 0, function (d) {
                 return 0;
             });
 
-            var pointsStack = scopeStack(stack, data, data[0].points, function (d) {
+            var pointsStack = scopeStack(stack, data, 0, data[0].points, function (d) {
                 return d.points;
             });
 
-            var doneStack = scopeStack(stack, data, 0, function (d) {
+            var doneStack = scopeStack(stack, data, 0, 0, function (d) {
                 return d.totalDone;
             });
 
@@ -300,11 +307,13 @@ burnify = (function () {
             var outEmptyStack, outStack;
 
             if (outData.length > 0) {
-                var outEmptyStack = scopeStack(stack, outData, 0, function (d) {
+                var x_ = limitX(x) + 2;
+
+                var outEmptyStack = scopeStack(stack, outData, x_, 0, function (d) {
                     return 0;
                 });
 
-                var outStack = scopeStack(stack, outData, outData[0].totalOut, function (d) {
+                var outStack = scopeStack(stack, outData, x_, outData[0].totalOut, function (d) {
                     return d.totalOut;
                 });
             }
@@ -321,17 +330,21 @@ burnify = (function () {
             return project.mvpSprint == project.lastSprint && project.lastSprint != data.length;
         }
 
+        function limitX(x) {
+            var lastSprint = data[project.lastSprint - 1].sprint;
+            var x_ = x(lastSprint) + x.rangeBand() * 1.2;
+            return x_;
+        }
+
         function renderProjectLimit(x, y0) {
             if (project.lastSprint == data.length) {
                 return;
             }
 
-            var lastSprint = data[project.lastSprint - 1].sprint;
-            var x_ = x(lastSprint) + x.rangeBand() * 1.2;
+            var x_ = limitX(x);
             var textY = -5;
 
             if (isMvpOverLimit()) {
-                x_ += 2;
                 textY = -15;
             }
 
@@ -359,7 +372,7 @@ burnify = (function () {
             var textY = -5;
 
             if (isMvpOverLimit()) {
-                x_ -= 2;
+                x_ -= 4;
             }
 
             svg.append("line")
