@@ -238,15 +238,15 @@ burnify = (function () {
                 var itemWidth = (dim.width - initX) / scopeData.length;
 
                 var index = 1;
-                
+
                 var values = scopeData.map(function (d) {
-                    var v =  {
+                    var v = {
                         index: index,
                         sprint: d.sprint,
                         x: initX + itemWidth * index,
                         y: yAccessor(d)
                     };
-                    
+
                     index++;
                     return v;
                 });
