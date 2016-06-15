@@ -1,6 +1,71 @@
-burnify = (function () {
-    function productChart(selector, project, width, height) {
-        var dim = defineChartDimentions(width, height);
+/*
+ * bunify Prototype 
+ */
+Burnify = function(selector, project, width, height) {
+
+	/*
+	 * Meta information for the rendering
+	 */
+	this.burnifyProject = project;
+
+	/*
+	 * Meta information for the chart
+	 */
+	this.chartTargetSelector = selector;
+	this.chartMargins = { top: 40, right: 30, bottom: 20, left: 30 }
+	this.setDimensions(width, height);
+	
+	// Chart rendering
+	return this;
+
+};
+
+/*
+ * API methods
+ */
+Burnify.prototype.getDimensions = function() {
+	return {
+        width: this.chartMargins.width,
+        height: this.chartMargins.height,
+        margin: {
+        	top: this.chartMargins.top,
+        	left: this.chartMargins.left,
+        	right: this.chartMargins.right,
+        	bottom: this.chartMargins.bottom
+        }
+    }
+}
+
+Burnify.prototype.setDimensions = function(width, height, margins) {
+	if (margins) {
+		this.chartMarginss.top = margins.top || this.chartMarginss.top;
+		this.chartMarginss.left = margins.left || this.chartMarginss.left;
+		this.chartMarginss.right = margins.right || this.chartMarginss.right;
+		this.chartMarginss.bottom = margins.bottom || this.chartMarginss.bottom;
+	}
+
+	this.chartDimensions = {
+        width: width - this.chartMargins.left - this.chartMargins.right,
+        height: height - this.chartMargins.top - this.chartMargins.bottom,
+        margin: this.chartMargins
+    }
+}
+
+Burnify.prototype.draw = function() {
+	this.burnify(this);
+}
+
+Burnify.prototype.onSprintBarClick = function(sprintNumber, sprint) { }
+Burnify.prototype.onFullScopeAreaClick = function(burnifyProject) { console.log('Full scope area clicked'); console.log(burnifyProject) }
+Burnify.prototype.onDoneScopeAreaClick = function(burnifyProject) { console.log('Done scope area clicked'); }
+Burnify.prototype.onOutScopeAreaClick = function(burnifyProject) { console.log('Out scope area clicked'); }
+
+/*
+ * Functional structure
+ */
+Burnify.prototype.burnify = function(meta) {
+	
+    function productChart(selector, project, dim) {
         var svg = createChartSVG(selector, dim);
         renderChart(dim, svg, project, prepareData(project));
     }
@@ -197,6 +262,9 @@ burnify = (function () {
                 .attr("width", x.rangeBand())
                 .attr("y", dim.height)
                 .attr("height", 0)
+                .on("click", function(d) {
+                	meta.onSprintBarClick(d.index, d);
+                })  
                 .transition()
                 .ease("linear")
                 .delay(function (d, i) {
@@ -271,7 +339,17 @@ burnify = (function () {
                     .attr("class", clazz)
                     .attr("d", function (d) {
                         return area(d.values);
+                    })
+                    .on("click", function(d) {
+                    	if (clazz == "scopeDone") {
+                    		meta.onDoneScopeAreaClick(meta.burnifyProject);
+                    	} else if (clazz == "scopeOut") {
+                    		meta.onOutScopeAreaClick(meta.burnifyProject);
+                    	} else {
+                    		meta.onFullScopeAreaClick(meta.burnifyProject);
+                    	}
                     });
+
 
                 svg.selectAll("." + clazz)
                     .data(stack)
@@ -486,8 +564,5 @@ burnify = (function () {
     }
 
 
-    return function (selector, project, width, height) {
-        productChart(selector, project, width, height);
-    };
-
-})();
+    productChart(meta.chartTargetSelector, meta.burnifyProject, meta.chartDimensions);
+}

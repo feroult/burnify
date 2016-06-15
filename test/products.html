@@ -39,12 +39,115 @@
 
     <script>
         // $.getJSON('https://cdn.rawgit.com/feroult/burnify/burnify-0.3/test/products.json', function (products) {
-        $.getJSON('products.json', function (products) {
-            burnify("#product1", products[0], 450, 250);
-            burnify("#product2", products[1], 450, 250);
-            burnify("#product3", products[2], 450, 250);
-            burnify("#product4", products[3], 450, 250);
-        });
+        
+        var products = [
+			{
+            	"name": "Burnify 1",
+	            "points": 120,
+    	        "lastSprint": 13,
+        	    "mvpSprint": 10,
+            	"sprints": [
+					{
+                    	"planned": 10,
+	                    "done": 10
+    	    	    }, {
+        	            "planned": 12,
+            	        "done": 10
+		            }, {
+    	                "planned": 10,
+        	            "done": 10
+    	        	}, {
+                	    "planned": 10,
+	                    "done": 6,
+    	                "added": 52
+        		    }, {
+            	        "planned": 14,
+                	    "done": 8,
+                    	"added": 12
+	        	    }, {
+    	                "planned": 14,
+        	            "done": 8,
+            	        "added": 2,
+                	    "removed": 20
+	            	}, {
+    	                "planned": 12,
+        	            "done": 4
+	            	}, {
+                	    "planned": 10,
+	                    "done": 6,
+    	                "added": 2
+    	    	    }
+        	    ]
+			}, {
+		        "name": "Burnify 2",
+		        "points": 220,
+		        "lastSprint": 10,
+		        "mvpSprint": 8,
+		        "sprints": [{
+		                "done": 18
+		        }, {
+		                "done": 24
+		        }, {
+		                "done": 16
+		        }, {
+		                "done": 22
+		        }, {
+		                "done": 8,
+		                "added": 32
+		        }, {
+		                "done": 20,
+		                "removed": 20
+		        }, {
+		                "done": 30,
+		                "added": 2
+		        }
+		    ]
+		}, {
+		        "name": "Burnify 3",
+		        "points": 120,
+		        "lastSprint": 10,
+		        "mvpSprint": 10,
+		        "sprints": [{
+		                "done": 10
+		        }, {
+		                "done": 10
+		        }, {
+		                "done": 10
+		        }
+		    ]
+		}, {
+		        "name": "Burnify 4",
+		        "points": 200,
+		        "lastSprint": 10,
+		        "mvpSprint": 8,
+		        "sprints": [{
+		                "done": 20
+		        }, {
+		                "done": 20
+		        }, {
+		                "done": 20
+		        }
+		    ]
+		}
+        ];
+        	
+        b1 = new Burnify("#product1", products[0], 450, 250);
+        b1.onSprintBarClick = function(sprintNumber, sprint) { alert('Sprint ' + sprintNumber + ' (done: '+ sprint.done + ')'); };
+        b1.onFullScopeAreaClick = function(p) { alert('Project ' + p.name + ' full scope area!'); };
+        b1.onDoneScopeAreaClick = function(p) { alert('Project ' + p.name + ' done scope area!'); };
+        b1.onOutScopeAreaClick = function(p) { alert('Project ' + p.name + ' out scope area!'); };
+        b1.draw();
+
+        new Burnify("#product2", products[1], 450, 250).draw();
+        new Burnify("#product3", products[2], 450, 250).draw();
+        new Burnify("#product4", products[3], 450, 250).draw();
+        
+        //$.getJSON('products.json', function (products) {
+        //	  new Burnify("#product1", products[0], 450, 250).draw();
+        //    new Burnify("#product2", products[1], 450, 250).draw();
+        //    new Burnify("#product3", products[2], 450, 250).draw();
+        //    new Burnify("#product4", products[3], 450, 250).draw();
+        //});
     </script>
 
 </body>
