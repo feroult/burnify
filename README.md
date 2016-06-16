@@ -26,7 +26,12 @@ Open the [live demo](https://cdn.rawgit.com/feroult/burnify/burnify-0.3/test/pro
 
 ### Burnify it:
 ```javascript
-burnify("#product-chart", json, 800, 600);
+b1 = new Burnify("#product1", products[0], 450, 250);
+b1.onSprintBarClick = function(sprintNumber, sprint) { alert('Sprint ' + sprintNumber + ' (done: '+ sprint.done + ')'); };
+b1.onFullScopeAreaClick = function(p) { alert('Project ' + p.name + ' full scope area!'); };
+b1.onDoneScopeAreaClick = function(p) { alert('Project ' + p.name + ' done scope area!'); };
+b1.onOutScopeAreaClick = function(p) { alert('Project ' + p.name + ' out scope area!'); };
+b1.draw();
 ```
 
 ### Sample json structure:
