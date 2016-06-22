@@ -39,6 +39,18 @@
     cursor: pointer;
 }
 
+.burnify .barPlanned {
+    fill: oldlace;
+}
+
+.burnify .barPlanned:hover {
+    fill: ivory;
+    stroke-width: 1px;
+    stroke-dasharray: 4, 4;
+    stroke: yellow;
+    cursor: pointer;
+}
+
 .burnify .line {
     stroke: #1d7fb3;
     stroke-width: 2px;

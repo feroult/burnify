@@ -14,10 +14,10 @@ Burnify = function(selector, project, width, height) {
 	this.chartTargetSelector = selector;
 	this.chartMargins = { top: 40, right: 30, bottom: 20, left: 30 }
 	this.setDimensions(width, height);
-	
+	this.setStyle('scope');
+
 	// Chart rendering
 	return this;
-
 };
 
 /*
@@ -38,10 +38,10 @@ Burnify.prototype.getDimensions = function() {
 
 Burnify.prototype.setDimensions = function(width, height, margins) {
 	if (margins) {
-		this.chartMarginss.top = margins.top || this.chartMarginss.top;
-		this.chartMarginss.left = margins.left || this.chartMarginss.left;
-		this.chartMarginss.right = margins.right || this.chartMarginss.right;
-		this.chartMarginss.bottom = margins.bottom || this.chartMarginss.bottom;
+		this.chartMargins.top = margins.top || this.chartMargins.top;
+		this.chartMargins.left = margins.left || this.chartMargins.left;
+		this.chartMargins.right = margins.right || this.chartMargins.right;
+		this.chartMargins.bottom = margins.bottom || this.chartMargins.bottom;
 	}
 
 	this.chartDimensions = {
@@ -49,16 +49,26 @@ Burnify.prototype.setDimensions = function(width, height, margins) {
         height: height - this.chartMargins.top - this.chartMargins.bottom,
         margin: this.chartMargins
     }
+
+    return this;
+}
+
+Burnify.prototype.setStyle = function(style) {
+    if (!(style in ['scope', 'sprint', 'cross', 'plain'])) {
+        style = 'scope';
+    }
+    this.chartStyle = style;
 }
 
 Burnify.prototype.draw = function() {
 	this.burnify(this);
 }
 
-Burnify.prototype.onSprintBarClick = function(sprintNumber, sprint) { }
-Burnify.prototype.onFullScopeAreaClick = function(burnifyProject) { console.log('Full scope area clicked'); console.log(burnifyProject) }
-Burnify.prototype.onDoneScopeAreaClick = function(burnifyProject) { console.log('Done scope area clicked'); }
-Burnify.prototype.onOutScopeAreaClick = function(burnifyProject) { console.log('Out scope area clicked'); }
+Burnify.prototype.onPlannedSprintBarClick = function(sprintNumber, sprint) { }
+Burnify.prototype.onDoneSprintBarClick = function(sprintNumber, sprint) { }
+Burnify.prototype.onFullScopeAreaClick = function(burnifyProject) { }
+Burnify.prototype.onDoneScopeAreaClick = function(burnifyProject) { }
+Burnify.prototype.onOutScopeAreaClick = function(burnifyProject) { }
 
 /*
  * Functional structure
@@ -75,9 +85,11 @@ Burnify.prototype.burnify = function(meta) {
             var x = createX();
             var y0 = createY0();
             var y1 = createY1();
+            var y2 = createY2();
 
             renderScopeArea(x, y0);
-            renderDoneBars(x, y1);
+            renderSprintBars(x, y1, 'planned', 'barPlanned', meta.onPlannedSprintBarClick);
+            renderSprintBars(x, y2, 'done', 'bar', meta.onDoneSprintBarClick);
             renderProjectLimit(x, y0);
             renderProjectMVP(x, y0);
             renderProductBurnLines(x, y0);
@@ -129,7 +141,7 @@ Burnify.prototype.burnify = function(meta) {
         function createY1() {
             var min = 0;
             var max = d3.max(data, function (d) {
-                return d.done;
+                return d.planned == undefined ? 0 : d.planned;
             }) * 1.5;
 
             var y1 = d3.scale.linear().domain([min, max]).range([dim.height, 0]);
@@ -148,6 +160,30 @@ Burnify.prototype.burnify = function(meta) {
             }
 
             return y1;
+        }
+
+        function createY2() {
+            var min = 0;
+            var max = d3.max(data, function (d) {
+                return d.done == undefined ? 0 : d.done;
+            }) * 1.5;
+
+            var y2 = d3.scale.linear().domain([min, max]).range([dim.height, 0]);
+
+            function dontcall() {
+                var yAxisRight = d3.svg.axis()
+                    .scale(y2)
+                    .ticks(8)
+                    .outerTickSize(0)
+                    .orient("right");
+
+                svg.append("g")
+                    .attr("class", "y axis axisRight")
+                    .attr("transform", "translate(" + (dim.width) + ",0)")
+                    .call(yAxisRight);
+            }
+
+            return y2;
         }
 
         function renderProductBurnLines(x, y0) {
@@ -251,11 +287,11 @@ Burnify.prototype.burnify = function(meta) {
             return lines;
         }
 
-        function renderDoneBars(x, y1) {
+        function renderSprintBars(x, y, field, clazz, onClickCallback) {
             var bars = svg.selectAll(".bar").data(data).enter();
 
             bars.append("rect")
-                .attr("class", "bar")
+                .attr("class", clazz)
                 .attr("x", function (d) {
                     return x(d.sprint);
                 })
@@ -263,8 +299,8 @@ Burnify.prototype.burnify = function(meta) {
                 .attr("y", dim.height)
                 .attr("height", 0)
                 .on("click", function(d) {
-                	meta.onSprintBarClick(d.index, d);
-                })  
+                    onClickCallback(d.index, d);
+                })
                 .transition()
                 .ease("linear")
                 .delay(function (d, i) {
@@ -272,13 +308,21 @@ Burnify.prototype.burnify = function(meta) {
                 })
                 .duration(500)
                 .attr("y", function (d) {
-                    return y1(d.done);
+                    var pts = (d[field] == undefined ? 0 : d[field]);
+                    return y(pts);
                 })
                 .attr("height", function (d, i, j) {
-                    return dim.height - y1(d.done);
+                    var pts = (d[field] == undefined ? 0 : d[field]);
+                    return dim.height - y(pts);
                 });
+        }
 
-            return bars;
+        function renderSprintPlannedBars(x, y) {
+            renderSprintBars(x, y, 'planned', 'barPlanned', meta.onPlannedSprintBarClick);
+        }
+
+        function renderSprintDoneBars(x, y) {
+            renderSprintBars(x, y, 'done', 'bar', meta.onDoneSprintBarClick);
         }
 
         function renderScopeArea(x, y0) {
@@ -350,7 +394,6 @@ Burnify.prototype.burnify = function(meta) {
                     	}
                     });
 
-
                 svg.selectAll("." + clazz)
                     .data(stack)
                     .transition()
@@ -378,7 +421,7 @@ Burnify.prototype.burnify = function(meta) {
             });
 
             var doneStack = scopeStack(stack, data, 0, 0, function (d) {
-                return d.totalDone;
+                return d.totalDone == undefined ? 0 : d.totalDone;
             });
 
             var outData = filterOut(data);
@@ -486,13 +529,18 @@ Burnify.prototype.burnify = function(meta) {
             var added = sprint.added ? sprint.added : 0;
             var removed = sprint.removed ? sprint.removed : 0;
 
-            remaining = remaining - sprint.done + added - removed;
+            var hasPlannedPoints = (sprint.planned != undefined && sprint.planned > 0);
+            var hasDonePoints = (sprint.done != undefined && sprint.done > 0);
+            var pointsTaken = hasDonePoints ? sprint.done : (hasPlannedPoints ? sprint.planned : 0);
+
+            remaining = remaining - pointsTaken + added - removed;
             points = points + added - removed;
-            totalDone += sprint.done;
+            totalDone += (sprint.done == undefined ? 0 : sprint.done);
 
             return {
                 index: i,
                 sprint: '' + (i + 1),
+                planned: sprint.planned,
                 done: sprint.done,
                 remaining: remaining,
                 points: points,
@@ -502,7 +550,8 @@ Burnify.prototype.burnify = function(meta) {
         });
 
         var mean = d3.mean(data, function (d) {
-            return d.done;
+            var donePts = d.done == undefined ? 0 : d.done;
+            return donePts;
         });
 
         do {
