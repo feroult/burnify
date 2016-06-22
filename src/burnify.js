@@ -88,8 +88,8 @@ Burnify.prototype.burnify = function(meta) {
             var y2 = createY2();
 
             renderScopeArea(x, y0);
-            renderSprintBars(x, y1, 'planned', 'barPlanned', meta.onPlannedSprintBarClick);
-            renderSprintBars(x, y2, 'done', 'bar', meta.onDoneSprintBarClick);
+            renderSprintPlannedBars(x, y1);
+            renderSprintDoneBars(x, y2);
             renderProjectLimit(x, y0);
             renderProjectMVP(x, y0);
             renderProductBurnLines(x, y0);
